@@ -39,6 +39,12 @@ import java.util.Locale;
 import java.util.Objects;
 
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import  com.google.firebase.database.FirebaseDatabase;
+
+
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager sensorManagers;
@@ -58,11 +64,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public int c=0;
     public String fileString = "";
 
+    //DatabaseReference myref1,myref2,myref3;
+    private DatabaseReference myrefAccelerometer, myrefGyroscope, myrefGPS;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+//        myref1 = FirebaseDatabase.getInstance().getReference("Accelerometer");
+//        //myref2 = FirebaseDatabase.getInstance().getReference("Accelerometer");
+//        myref2 = FirebaseDatabase.getInstance().getReference("Gyroscope");
+//        myref3 = FirebaseDatabase.getInstance().getReference("GPS");
+        myrefAccelerometer = FirebaseDatabase.getInstance().getReference("Accelerometer");
+        myrefGyroscope = FirebaseDatabase.getInstance().getReference("Gyroscope");
+        myrefGPS = FirebaseDatabase.getInstance().getReference("GPS");
 
         MyFusedLocationClient= LocationServices.getFusedLocationProviderClient(this);
         sensorManagers = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -190,6 +204,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 if(location!=null){
                     wayLatitude = location.getLatitude();
                     wayLongitude = location.getLongitude();
+                    myrefGPS.child("latitude").setValue( wayLatitude);
+                    myrefGPS.child("longitude").setValue(wayLongitude);
+
 
                     GPSx = (TextView) findViewById(R.id.gpsx);
                     GPSx.setText("" + wayLatitude);
@@ -221,9 +238,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             float gx = sensorEvent.values[0];
             float gy = sensorEvent.values[1];
             float gz = sensorEvent.values[2];
+            myrefGyroscope.child("x").setValue(gx);
+            myrefGyroscope.child("y").setValue(gy);
+            myrefGyroscope.child("z").setValue(gz);
 
             long currentTime = System.currentTimeMillis();
-            if ((currentTime - lastUpdate_gyro > 300)) {
+            if ((currentTime - lastUpdate_gyro > 30)) {
 
                 lastUpdate_gyro = currentTime;
 
@@ -252,6 +272,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
+            myrefAccelerometer.child("x").setValue(x);
+            myrefAccelerometer.child("y").setValue(y);
+            myrefAccelerometer.child("z").setValue(z);
 
             long currentTime = System.currentTimeMillis();
 
