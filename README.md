@@ -12,7 +12,6 @@ This is the android part of the Iot final project. It is used for collecting the
     level: 33
 
     3) Gradle: Jbr-17
-3. How to use it:
-   fork from this part and install in app on your own computer.
+
 
 
